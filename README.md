@@ -16,7 +16,7 @@ This skill is built on the same premise: an honest written audit outlives any in
 |---|---|
 | **Firmitas** — will it stand? | Foundations & correctness — architecture, error handling, bugs, security; what works today but breaks when something shifts |
 | **Utilitas** — will it serve as demands grow? | Scalability & future-proofness — concurrency, resource growth, single-user assumptions |
-| **Venustas** — is anything superfluous? | Leanness — dead code, duplication, contradictions, glue and scar tissue from repeated AI-assisted rewrites |
+| **Venustas** — is anything superfluous? | Leanness — dead code, duplication, contradictions, glue and scar tissue from repeated AI-assisted rewrites; and above the single file, the shape of the whole: how the modules cooperate, whether a simpler route would do the same job with fewer failure points, and an explicit verdict — elegant or spaghetti — with the prescribed untangling |
 
 Plus a fourth dimension the treatise-writer would have recognized: **the free take** — the auditor's unconstrained view of better approaches and what to build next, once it truly knows your codebase.
 
@@ -67,7 +67,7 @@ Copy-Item -Recurse Vitruvius\vitruvius "$env:USERPROFILE\.claude\skills\"
 
 Then open Claude Code in any project root and run `/vitruvius`.
 
-The skill is deliberately lean — 58 lines. It fixes only what must not drift (the no-edit rule, evidence anchoring, the four dimensions, the report contract) and leaves method, judgment, and delegation to the model. It was authored and validated during the Claude Fable 5 window, following Anthropic's guidance that over-prescriptive skills degrade strong models; it is model-agnostic and runs on whatever your session uses.
+The skill is deliberately lean — 49 lines. It fixes only what must not drift (the no-edit rule, evidence anchoring, the four dimensions, the report contract) and leaves method, judgment, and delegation to the model. It was authored and validated during the Claude Fable 5 window, following Anthropic's guidance that over-prescriptive skills degrade strong models. It runs on whatever your session uses, but it checks the engine first: below a Fable-class model at high reasoning effort it asks the operator before proceeding, and every report opens with a provenance line naming the model and effort that produced it.
 
 ## License
 
