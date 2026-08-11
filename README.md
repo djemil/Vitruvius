@@ -16,9 +16,13 @@ This skill is built on the same premise: an honest written audit outlives any in
 |---|---|
 | **Firmitas** — will it stand? | Foundations & correctness — architecture, error handling, bugs, security; what works today but breaks when something shifts |
 | **Utilitas** — will it serve as demands grow? | Scalability & future-proofness — concurrency, resource growth, single-user assumptions |
-| **Venustas** — is anything superfluous? | Leanness — dead code, duplication, contradictions, glue and scar tissue from repeated AI-assisted rewrites; and above the single file, the shape of the whole: how the modules cooperate, whether a simpler route would do the same job with fewer failure points, and an explicit verdict — elegant or spaghetti — with the prescribed untangling |
+| **Venustas** — is anything superfluous? | Leanness & simplification — dead code, redundant branches, indirection that isolates nothing, glue and scar tissue from repeated AI-assisted rewrites; and above the single file, the shape of the whole: how the modules cooperate, whether a simpler route would do the same job with fewer failure points, and an explicit verdict — elegant or spaghetti — with the prescribed untangling |
+| **Venustas**, again — is anything built twice? | Consistency & single source of truth — one thing implemented in several places: a button styled inline on two screens, two functions parsing the same date, the same rule validated twice. Every site named, the shared unit that should replace them, and the drift the copies have already produced |
+| **Firmitas**, in the documents | Doctrine contradictions — rules the project set itself that now contradict each other, or that the code no longer obeys. Both rules quoted with sources, the consequence of revoking each, a recommendation, and the exact cleanup list to run once you rule |
 
-Plus a fourth dimension the treatise-writer would have recognized: **the free take** — the auditor's unconstrained view of better approaches and what to build next, once it truly knows your codebase.
+Plus a dimension the treatise-writer would have recognized: **the free take** — the auditor's unconstrained view of better approaches and what to build next, once it truly knows your codebase.
+
+**The simplification standard.** `x + 4x² + x³ + 2x - x² + 1` and `(x+1)³` are the same function; one of them is a mess. Vitruvius reports the second form. Every such finding carries an *equivalence argument* — the current form, the proposed form, and why they behave identically for every input the current one handles, with the edge cases checked named. Simpler but not equivalent is a behavior change, and gets labeled one.
 
 ## What it does
 
@@ -47,7 +51,7 @@ The skill was developed test-first, the way you'd develop code:
 
 1. **Baseline (red):** a fresh agent was given a real codebase and a naive audit request, including the tempting phrase *"handle small obvious problems as you see fit."* It edited three files mid-audit and delivered its findings as chat — which evaporates.
 2. **Skill (green):** written specifically against those observed failures.
-3. **Re-test:** same codebase, same temptation, verbatim. Zero files touched, and a ranked, anchored, four-dimension report saved to disk — with the temptation itself politely declined in writing.
+3. **Re-test:** same codebase, same temptation, verbatim. Zero files touched, and a ranked, anchored, every-dimension report saved to disk — with the temptation itself politely declined in writing.
 
 ## Install
 
@@ -67,7 +71,7 @@ Copy-Item -Recurse Vitruvius\vitruvius "$env:USERPROFILE\.claude\skills\"
 
 Then open Claude Code in any project root and run `/vitruvius`.
 
-The skill is deliberately lean — 49 lines. It fixes only what must not drift (the no-edit rule, evidence anchoring, the four dimensions, the report contract) and leaves method, judgment, and delegation to the model. It was authored and validated during the Claude Fable 5 window, following Anthropic's guidance that over-prescriptive skills degrade strong models. It runs on whatever your session uses, but it checks the engine first: below a Fable-class model at high reasoning effort it asks the operator before proceeding, and every report opens with a provenance line naming the model and effort that produced it.
+The skill is deliberately lean — 85 lines. It fixes only what must not drift (the no-edit rule, evidence anchoring, the six dimensions, the content each finding must carry, the report contract) and leaves method, judgment, and delegation to the model, following Anthropic's guidance that over-prescriptive skills degrade strong models. It runs on whatever your session uses, but it checks the engine first: below an Opus-5-class model at high reasoning effort it says so once and runs the audit anyway, and every report opens with a provenance line naming the model and effort that produced it.
 
 ## License
 
