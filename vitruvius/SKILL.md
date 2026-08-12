@@ -33,6 +33,8 @@ The most valuable findings are often invisible in the code alone. Before judging
 
    The standard, in his terms: `x + 4x² + x³ + 2x - x² + 1` and `(x+1)³` are the same function. One is a mess. Report the second. Wherever the code reaches the right answer by a longer route than it needs, name the shorter equivalent route — redundant branches, restated conditions, intermediates that exist only to be consumed once, indirection that isolates nothing, dead code, glue and scar tissue left by repeated rewrites.
 
+   Config is code for this purpose: a root CLAUDE.md over 16KB soft / 20KB hard (bytes), or a directory-scoped CLAUDE.md over 8KB, is a leanness finding — the cost is paid in every session's context window.
+
    *Inside files:* the reductions above, plus semantic duplication — same intent, different implementation. *Between files:* trace how the modules actually cooperate — the route data and control take from input to result — and judge that route as a design. Where the same outcome could be had with fewer moving parts, fewer places to fail, or fewer hops, prescribe the simpler shape. Then give the verdict the owner is really asking for: is this code elegant, a shape a craftsman would sign, or spaghetti? Name which, and where it is tangled, state how it should be untangled. "Should", not "could": prescribe the shape, don't offer a menu.
 
    **Every simplification finding carries an equivalence argument**, because the requirement is *simpler without breaking it*. Give three things: the current form (`file:line`), the proposed simpler form, and the argument that the two behave identically for every input the current form handles — naming the edge cases you checked where they might not (nulls and empties, error and early-return paths, ordering, mutation of shared state, concurrency, floating-point and rounding, exceptions). If you cannot make that argument, the finding is labeled UNVERIFIED and says which case you could not settle. A change that is simpler but *not* equivalent is a behavior change: still worth reporting, but labeled as one, never as a free simplification.
@@ -49,17 +51,28 @@ The most valuable findings are often invisible in the code alone. Before judging
 
 3. **Doctrine contradictions** — the project's own rules, against each other and against the code.
 
-   Over a project's life, rules accumulate: CLAUDE.md `## Decisions`, MEMORY.md, README, `docs/`, blueprints, code comments, commit messages. Later rules get written without anyone noticing they contradict an earlier one, and both stay on the books — so the project holds two laws and the agent obeys whichever it read last. Surface every such pair. Two kinds count: **rule vs. rule** (two recorded rules that cannot both be followed) and **rule vs. code** (a rule on the books the code does not obey — including a *zombie*: code still faithfully implementing a decision that was cancelled).
+   Over a project's life, rules accumulate: CLAUDE.md `## Decisions`, MEMORY.md, README, `docs/`, blueprints, code comments, commit messages. Later rules get written without anyone noticing they contradict an earlier one, and both stay on the books — so the project holds two laws and the agent obeys whichever it read last. Surface every such pair. Where `## Decisions` bullets carry rule IDs (`XX-NNN`), name every rule by its ID; a document that cites an ID while stating content the rule does not contain is itself a contradiction — the citation manufactures false agreement. Two kinds count: **rule vs. rule** (two recorded rules that cannot both be followed) and **rule vs. code** (a rule on the books the code does not obey — including a *zombie*: code still faithfully implementing a decision that was cancelled).
 
    For each contradiction, the report gives a block containing all of:
    - **A** — the rule verbatim, with source `file:line`, and its date or session if recoverable
    - **B** — the same, for the conflicting rule
    - **The collision** — the concrete situation in which following one violates the other
-   - **In force today** — which rule the code actually obeys, with evidence
+   - **In force today** — two determinations, which may disagree: which rule is *law* under the project's precedence order (owner ruling > `## Decisions`/rulebook > CLAUDE.md prose > MEMORY.md > docs/ > code comments > code), and which rule the code *actually obeys*, with evidence. When law and fact differ, say so plainly — that difference is the finding
    - **If A is revoked** — what depends on A: code, docs, workflows, other rules that cite it; what would have to change, and what breaks
    - **If B is revoked** — the same
    - **Recommendation** — keep A, keep B, or a new rule superseding both, with the reasoning. Recommend; the owner rules.
-   - **Cleanup once ruled** — the exact files and lines to delete so the losing rule leaves no trace anywhere it is recorded. A list to be executed after the decision, not executed here.
+   - **Cleanup once ruled** — the exact files and lines to delete so the losing rule leaves no trace anywhere it is recorded. A list to be executed after the decision, not executed here. Cleanup never touches `completed_tasks.md` or any dated history log — a revoked decision was still truly made at its time, and the ruling session's own entry documents the supersession.
+   - **Ready to file** — the same contradiction restated in the drift-review conflict format below, verbatim-ready to paste into `.session_prompts/drift-reviews/UNRESOLVED.md`. You still file nothing — the report remains your sole write; this field makes promotion a copy instead of a rewrite.
+
+     ```
+     ## Conflict [n] — [short subject]
+
+     - **Decided:** [rule A, by ID where one exists] ([source file:line], [session/date if recoverable])
+     - **Now:** [rule B, or what the code actually does] ([source])
+     - **Conflict:** [why the two cannot both stand]
+     - **Raised:** vitruvius audit, [date]
+     - **Status:** awaiting owner ruling
+     ```
 
    Until the owner rules, the contradiction is live and the cleanup unexecuted — the report says so plainly rather than implying the matter is closed.
 
