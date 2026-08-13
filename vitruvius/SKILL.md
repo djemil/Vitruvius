@@ -57,7 +57,7 @@ The most valuable findings are often invisible in the code alone. Before judging
    - **A** — the rule verbatim, with source `file:line`, and its date or session if recoverable
    - **B** — the same, for the conflicting rule
    - **The collision** — the concrete situation in which following one violates the other
-   - **In force today** — two determinations, which may disagree: which rule is *law* under the project's precedence order (owner ruling > `## Decisions`/rulebook > CLAUDE.md prose > MEMORY.md > docs/ > code comments > code), and which rule the code *actually obeys*, with evidence. When law and fact differ, say so plainly — that difference is the finding
+   - **In force today** — two determinations, which may disagree: which rule is *law* under the project's precedence order (owner ruling > `## Decisions` sections, root and directory-scoped > CLAUDE.md prose > MEMORY.md > docs/ > code comments > code), and which rule the code *actually obeys*, with evidence. When law and fact differ, say so plainly — that difference is the finding
    - **If A is revoked** — what depends on A: code, docs, workflows, other rules that cite it; what would have to change, and what breaks
    - **If B is revoked** — the same
    - **Recommendation** — keep A, keep B, or a new rule superseding both, with the reasoning. Recommend; the owner rules.
