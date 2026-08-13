@@ -61,7 +61,14 @@ The most valuable findings are often invisible in the code alone. Before judging
 
    Over a project's life, rules accumulate: CLAUDE.md `## Decisions`, MEMORY.md, README, `docs/`, blueprints, code comments, commit messages. Later rules get written without anyone noticing they contradict an earlier one, and both stay on the books — so the project holds two laws and the agent obeys whichever it read last. Surface every such pair. Where `## Decisions` bullets carry rule IDs (`XX-NNN`), name every rule by its ID; a document that cites an ID while stating content the rule does not contain is itself a contradiction — the citation manufactures false agreement. Two kinds count: **rule vs. rule** (two recorded rules that cannot both be followed) and **rule vs. code** (a rule on the books the code does not obey — including a *zombie*: code still faithfully implementing a decision that was cancelled).
 
-   For each contradiction, the report gives a block containing all of:
+   **First, classify every contradiction into one of two kinds — they have different destinations, and conflating them spends the owner's attention on questions that are not questions.**
+
+   - **Stale restatement** — a higher source clearly supersedes, and the lower text is a leftover copy: a code comment attributing a deleted rule, a README describing revoked behaviour, a doc restating a rule that was replaced. Nobody needs to rule on these. Under the global Precedence section the project's own session fixes them the same session it finds them, under standing authority. Report each as an ordinary finding with `file:line`, what it says, what superseded it, and the exact replacement text — **do not** write a `## Conflict` block for it and do not put it to the owner. Sweep for *all* copies before reporting: a deleted rule usually left its restatement in more than one place, and reporting the first one found lets the others survive the cleanup.
+   - **Live conflict** — two current statements and it is genuinely unclear which is in force, or the answer costs something either way. Only these get the block below and only these reach the owner.
+
+   The test is not how important the contradiction is; it is whether a decision exists to be made. A stale restatement of an owner's own deleted rule is often the more embarrassing finding, and it is still not a question.
+
+   For each **live conflict**, the report gives a block containing all of:
    - **A** — the rule verbatim, with source `file:line`, and its date or session if recoverable
    - **B** — the same, for the conflicting rule
    - **The collision** — the concrete situation in which following one violates the other
@@ -115,6 +122,8 @@ One file: `docs/reviews/vitruvius-YYYY-MM-DD.md` inside the project being audite
 **The audit is not finished when the report is written.** It is finished when every dimension-3 contradiction has a home that something will read again.
 
 The report lives at `docs/reviews/vitruvius-YYYY-MM-DD.md`. Under the project's own file taxonomy that is a **record** — dated evidence, not auto-loaded, read only when someone goes looking. So a contradiction that stops there is a live, evidenced conflict in a file nothing opens: the SessionStart hook reads only `UNRESOLVED.md`; drift review reads only `.session_prompts/` and `MEMORY.md`; wrap-up's blocking check reads only `UNRESOLVED.md`. Six findings in a report, two hand-copied out, four gone — and nothing anywhere is wrong, so nothing complains. The **Ready to file** field makes promotion one paste, which is exactly what makes forgetting it a silent, one-keystroke loss.
+
+Only **live conflicts** are filed. A stale restatement is not filed, not put to the owner, and not carried — it is a finding the project's session fixes under standing authority, and filing it as a conflict wastes a ruling on a question with one answer.
 
 So, as the closing step, for **every** conflict block in the report:
 
