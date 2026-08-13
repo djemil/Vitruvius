@@ -33,7 +33,7 @@ The most valuable findings are often invisible in the code alone. Before judging
 
    The standard, in his terms: `x + 4x² + x³ + 2x - x² + 1` and `(x+1)³` are the same function. One is a mess. Report the second. Wherever the code reaches the right answer by a longer route than it needs, name the shorter equivalent route — redundant branches, restated conditions, intermediates that exist only to be consumed once, indirection that isolates nothing, dead code, glue and scar tissue left by repeated rewrites.
 
-   Config is code for this purpose: a root CLAUDE.md over 16KB soft / 20KB hard (bytes), or a directory-scoped CLAUDE.md over 8KB, is a leanness finding — the cost is paid in every session's context window.
+   Config is code for this purpose: a root CLAUDE.md over 16KB soft / 20KB hard (bytes), or a directory-scoped CLAUDE.md over 8KB, is a leanness finding — the cost is paid in every session's context window. Classify every project file as config (harness-loaded, capped, rulings only), record (append-only history and dated evidence), or scaffold (carries an explicit retirement trigger). A file that fits none, or a scaffold that has outlived its purpose or lacks a death trigger, is a finding.
 
    *Inside files:* the reductions above, plus semantic duplication — same intent, different implementation. *Between files:* trace how the modules actually cooperate — the route data and control take from input to result — and judge that route as a design. Where the same outcome could be had with fewer moving parts, fewer places to fail, or fewer hops, prescribe the simpler shape. Then give the verdict the owner is really asking for: is this code elegant, a shape a craftsman would sign, or spaghetti? Name which, and where it is tangled, state how it should be untangled. "Should", not "could": prescribe the shape, don't offer a menu.
 
@@ -48,6 +48,8 @@ The most valuable findings are often invisible in the code alone. Before judging
    Each finding names all of: **every** site (`file:line` for each — not "and others"), the single shared unit that should exist and where it belongs in this project's structure, and the concrete divergence the copies have already produced or will — which copy drifted, and what a user or caller would actually see.
 
    Do not merge what is only coincidentally similar. Two sites that share a shape but have no reason to change together are correctly separate; when you judge that, say so and leave them alone rather than staying silent.
+
+   Where rule IDs exist, verify the ID space: exactly one counter comment, in the root `## Decisions`; every ID defined in exactly one file; none reused. A second counter, a duplicate definition, or an ID above the counter is a finding.
 
 3. **Doctrine contradictions** — the project's own rules, against each other and against the code.
 
