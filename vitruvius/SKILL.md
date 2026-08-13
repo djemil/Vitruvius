@@ -19,7 +19,9 @@ If the session is below the bar on either count, or you cannot tell, **recommend
 
 ## Hard rules
 
-1. **Advisory only. You change nothing.** No fixes, no cleanups, no "safe" edits — not a typo, not an unused import, not a README correction, not a formatting pass. An obvious, cheap fix is still a finding, not an action. The single exception is writing your report file (below). If you catch yourself about to edit anything else, stop: that edit is a finding that belongs in the report.
+1. **Advisory only. You change nothing.** No fixes, no cleanups, no "safe" edits — not a typo, not an unused import, not a README correction, not a formatting pass. An obvious, cheap fix is still a finding, not an action. If you catch yourself about to edit anything else, stop: that edit is a finding that belongs in the report.
+
+   You write exactly two files, and nothing else: **the report** (below), and **`UNRESOLVED.md`** — the conflict blocks from dimension 3, filed as the closing step of the audit (see *Before the audit is done*). Filing a conflict is not fixing one: you still rule nothing, revoke nothing, and execute no cleanup. Global CLAUDE.md's Precedence section requires any agent that finds a live conflict to persist it and raise it; this is that obligation, discharged once at the end instead of interrupting the audit.
 2. **Every claim is anchored.** A finding names its evidence: `file:line`, a commit, a config entry, or command output you actually saw this session. State concretely what breaks and under what conditions. If you believe something but could not verify it, label it UNVERIFIED instead of asserting it. Treat negative claims — "no callers", "never used", "dead" — as the easiest to get wrong: before one enters the report, re-run the search yourself across source, tests, and docs; a sweep agent's word is not evidence.
 3. **Cover all six dimensions.** Where to look and how to judge are entirely yours — but a report missing a dimension is incomplete, and partial coverage must never read as full coverage.
 
@@ -33,7 +35,9 @@ The most valuable findings are often invisible in the code alone. Before judging
 
    The standard, in his terms: `x + 4x² + x³ + 2x - x² + 1` and `(x+1)³` are the same function. One is a mess. Report the second. Wherever the code reaches the right answer by a longer route than it needs, name the shorter equivalent route — redundant branches, restated conditions, intermediates that exist only to be consumed once, indirection that isolates nothing, dead code, glue and scar tissue left by repeated rewrites.
 
-   Config is code for this purpose: the project's CLAUDE.md files COMBINED over 16KB soft / 20KB hard (bytes — the owner's cap is on the total, not per file), any single scoped file over 8KB, or MEMORY.md over 20KB, is a leanness finding — the cost is paid in every session's context window. Classify every project file as config (harness-loaded, capped, rulings only), state (current-only, rewritten in place: MEMORY.md, skipped_issues.md), record (append-only history and dated evidence), or scaffold (carries an explicit retirement trigger). A file that fits none, or a scaffold that has outlived its purpose or lacks a death trigger, is a finding.
+   Config is code for this purpose: the project's CLAUDE.md files COMBINED over 16KB soft / 20KB hard (bytes — the owner's cap is on the total, not per file), any single scoped file over 8KB, or MEMORY.md over 20KB, is a leanness finding — the cost is paid in every session's context window. Classify the project's **documentation and configuration** files — the prose an agent or the owner reads to know what to do — as config (harness-loaded, capped, rulings only), state (current-only, rewritten in place: MEMORY.md, skipped_issues.md), record (append-only history and dated evidence), or scaffold (carries an explicit retirement trigger). A file that fits none, or a scaffold that has outlived its purpose or lacks a death trigger, is a finding. The four kinds are documentation kinds: source code, tests, assets and build files are judged everywhere else in this audit and are not classified here. Say in the report which files you swept, so the coverage claim is checkable — a taxonomy pass that quietly narrowed its own scope must not read as complete.
+
+   A file classified as a defect is a **finding with a named remedy and a named owner-decision**, not a deletion. Say what it is, why it fits nothing, and what you recommend — retire it, fold it into a file that has a home, or give it a retirement trigger. Deleting is destructive and the owner rules on it.
 
    *Inside files:* the reductions above, plus semantic duplication — same intent, different implementation. *Between files:* trace how the modules actually cooperate — the route data and control take from input to result — and judge that route as a design. Where the same outcome could be had with fewer moving parts, fewer places to fail, or fewer hops, prescribe the simpler shape. Then give the verdict the owner is really asking for: is this code elegant, a shape a craftsman would sign, or spaghetti? Name which, and where it is tangled, state how it should be untangled. "Should", not "could": prescribe the shape, don't offer a menu.
 
@@ -49,7 +53,9 @@ The most valuable findings are often invisible in the code alone. Before judging
 
    Do not merge what is only coincidentally similar. Two sites that share a shape but have no reason to change together are correctly separate; when you judge that, say so and leave them alone rather than staying silent.
 
-   Where rule IDs exist, verify the ID space: exactly one counter comment, in the root `## Decisions`; every ID defined in exactly one file; none reused. A second counter, a duplicate definition, or an ID above the counter is a finding.
+   Where rule IDs exist, verify the ID space across every `CLAUDE.md` in the repo (`Glob("**/CLAUDE.md")` — the counter lives in root, the IDs mostly do not): exactly one counter comment, in the root `## Decisions`; every ID defined in exactly one file. A second counter, a duplicate definition, or an ID at or above the counter is a finding. **No counter comment at all, while IDs exist, is also a finding** — the counter is the only thing preventing a retired ID from being handed out again, and without it the next promotion reconstructs a next-ID by guesswork.
+
+   Two epistemics to respect here. *Reuse* cannot be proven from the files — a reused ID looks identical to an original — so report what you can see ("N IDs, each defined once, highest is XX-088, counter says XX-089, consistent") and never assert "none reused" as fact. A *gap* is likewise not automatically a finding: it is the expected trace of a deleted rule. Report gaps as observations with the ID and, where the history shows it, what used to occupy them; a gap becomes a finding only when the counter or a live citation says something should be there.
 
 3. **Doctrine contradictions** — the project's own rules, against each other and against the code.
 
@@ -64,20 +70,22 @@ The most valuable findings are often invisible in the code alone. Before judging
    - **If B is revoked** — the same
    - **Recommendation** — keep A, keep B, or a new rule superseding both, with the reasoning. Recommend; the owner rules.
    - **Cleanup once ruled** — the exact files and lines to delete so the losing rule leaves no trace anywhere it is recorded. A list to be executed after the decision, not executed here. Cleanup never touches `completed_tasks.md` or any dated history log — a revoked decision was still truly made at its time, and the ruling session's own entry documents the supersession.
-   - **Ready to file** — the same contradiction restated in the drift-review conflict format below, verbatim-ready to paste into `.session_prompts/drift-reviews/UNRESOLVED.md`. You still file nothing — the report remains your sole write; this field makes promotion a copy instead of a rewrite.
+   - **Ready to file** — the same contradiction in the drift-review conflict format below, which you file at the end of the audit (see *Before the audit is done*).
 
      ```
      ## Conflict [n] — [short subject]
 
-     - **Decided:** [rule A, by ID where one exists] ([source file:line], [session/date if recoverable])
+     - **Decided:** [rule A, by ID where one exists] ([source file:line]; Session [X], [date] if recoverable)
+     - **Authority:** owner ruling | recorded decision | doc | code comment | code behaviour
      - **Now:** [rule B, or what the code actually does] ([source])
      - **Conflict:** [why the two cannot both stand]
-     - **Raised:** vitruvius audit, [date]
+     - **Raised:** Session [N], [date] by vitruvius audit
      - **Status:** awaiting owner ruling
      ```
 
-     (This block format is owned by the drift-review skill, which consumes these blocks —
-     if either copy of the format changes, change both.)
+     `Authority:` records what the `Decided:` side actually is. The rulings the owner will be offered — keep the earlier decision / adopt the new direction / not a conflict — are worded for something he decided; a block sourced from a stale code comment must not reach him dressed as his own past ruling. `Raised:` carries a session number, not just a date: the re-raise chain annotates it. If the session number is not recoverable from the project's records, say `Session unknown` rather than dropping the field.
+
+     (This block format is owned by the drift-review skill, which consumes these blocks — if either copy changes, change both, and verify they match rather than trusting this note: they have drifted before while each claimed parity.)
 
    Until the owner rules, the contradiction is live and the cleanup unexecuted — the report says so plainly rather than implying the matter is closed.
 
@@ -101,3 +109,23 @@ One file: `docs/reviews/vitruvius-YYYY-MM-DD.md` inside the project being audite
 - Per dimension, name the single change that would most improve it.
 - If the codebase is too large for one pass, state exactly what you covered and what remains.
 - End with a blunt bottom line: the codebase's honest condition in a few sentences.
+
+## Before the audit is done — file the conflicts
+
+**The audit is not finished when the report is written.** It is finished when every dimension-3 contradiction has a home that something will read again.
+
+The report lives at `docs/reviews/vitruvius-YYYY-MM-DD.md`. Under the project's own file taxonomy that is a **record** — dated evidence, not auto-loaded, read only when someone goes looking. So a contradiction that stops there is a live, evidenced conflict in a file nothing opens: the SessionStart hook reads only `UNRESOLVED.md`; drift review reads only `.session_prompts/` and `MEMORY.md`; wrap-up's blocking check reads only `UNRESOLVED.md`. Six findings in a report, two hand-copied out, four gone — and nothing anywhere is wrong, so nothing complains. The **Ready to file** field makes promotion one paste, which is exactly what makes forgetting it a silent, one-keystroke loss.
+
+So, as the closing step, for **every** conflict block in the report:
+
+1. `Read` `<repo_root>/.session_prompts/drift-reviews/UNRESOLVED.md` (`<repo_root>` = `Bash(git rev-parse --show-toplevel)`; create the file and its directories if absent — global CLAUDE.md, Precedence, says "create if absent", and a project without prompt capture still needs somewhere to hold the question).
+2. Append each block that is not already there. Match on subject and sources, not on wording — re-filing a block the last audit already filed doubles the owner's queue and trains him to ignore it.
+3. Number the blocks continuing from the file's existing highest `## Conflict [n]`, so `[n]` stays unique within the file.
+
+Then tell the owner, in the run's closing message: how many conflicts the audit found, how many were newly filed, how many were already open, and — in one plain sentence each — what they are. Say plainly that they will be raised at the start of every session until he rules on them, and that `/drift-review` Phase 2 is where the rulings happen.
+
+**You do not run the ruling loop.** No `AskUserQuestion`, no menu, no applying an outcome — an audit is long and it would land the interruption at the worst moment, and rulings are drift-review's job. Filing is the handoff; the hook does the rest. What you must never do is finish an audit reporting contradictions you left with no watcher.
+
+Do not paste conflict blocks into `UNRESOLVED.md` still wrapped in the report's code fences: the hook counts lines beginning `## Conflict` without fence awareness, and a fenced or quoted example block wedges the blocking injection permanently on with nothing actually open.
+
+The report's dimension-3 section states, per contradiction, that it was filed and where.

@@ -41,9 +41,11 @@ One deliverable: `docs/reviews/vitruvius-YYYY-MM-DD.md` in the audited project.
 
 ## What it will never do
 
-Edit anything. Not a typo, not an unused import, not a "safe" cleanup. An obvious, cheap fix is a finding, not an action — the report file is the only thing it writes.
+Edit anything. Not a typo, not an unused import, not a "safe" cleanup. An obvious, cheap fix is a finding, not an action.
 
 This is a hard rule because it fails without one: offer an agent a friendly *"handle small problems as you see fit"* and it will start fixing mid-audit. An audit that edits is neither an audit nor safe.
+
+It writes exactly two files. The report, and — as its closing step — the conflict blocks from the doctrine-contradictions dimension, appended to the project's open-conflicts file so something reads them again. Filing a conflict is not fixing one: it rules nothing, revokes nothing, and executes no cleanup. That second write exists because the alternative was worse. A contradiction that stops at the report sits in a dated file nothing opens; the ones a human happens to copy out get resolved and the rest are lost silently, with no error anywhere to notice.
 
 ## How it was tested
 
