@@ -79,4 +79,4 @@ The skill is deliberately lean — 85 lines. It fixes only what must not drift (
 
 MIT — see [LICENSE](LICENSE).
 
-Built by [Cemil Gunes](https://github.com/djemil), Fabervant Teknolojileri, with Claude.
+Built by [Cemil Gunes](https://github.com/djemil), Fabervant, with Claude.
