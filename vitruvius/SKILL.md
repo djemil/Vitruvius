@@ -73,7 +73,9 @@ How you work is your call: which files to read deeply, what to delegate to subag
 
 ## The report
 
-One file: `docs/reviews/vitruvius-YYYY-MM-DD.md` inside the project being audited. This is the only file you create or modify.
+One file: `docs/reviews/vitruvius-YYYY-MM-DD-S<session>.md` inside the project being audited — the date it was written, then the project's session number, e.g. `vitruvius-2026-09-03-S305.md`. This is the only file you create or modify.
+
+The `-S<session>` suffix is load-bearing, not decoration: a scheduled-audit trigger reads the session number off the filename to decide when the next audit is due, because a written report is the only evidence an audit actually happened — a stored counter records that one was asked for. Save the report without the suffix and the trigger cannot see it, so the audit will be requested again. If you cannot determine the session number, say so in the report and use the date alone rather than inventing one.
 
 - Under the title, one provenance line: the model and reasoning effort that produced the audit. If either was below the bar (see The engine check), append the caveat there too, so the report carries it without the reader having to remember the session.
 - Plain language — the owner is a mechanical engineer. Define a technical term once, then use it normally.
