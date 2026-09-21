@@ -19,9 +19,37 @@ If the session is below the bar on either count, or you cannot tell, **recommend
 
 ## Hard rules
 
-1. **Advisory only. You change nothing.** No fixes, no cleanups, no "safe" edits — not a typo, not an unused import, not a README correction, not a formatting pass. An obvious, cheap fix is still a finding, not an action. The single exception is writing your report file (below). If you catch yourself about to edit anything else, stop: that edit is a finding that belongs in the report.
+1. **Advisory only. You change nothing.** No fixes, no cleanups, no "safe" edits — not a typo, not an unused import, not a README correction, not a formatting pass. An obvious, cheap fix is still a finding, not an action. Two exceptions only: writing your report file, and recording the refactor mandate with `refactor_mandate.py --set` (both below). If you catch yourself about to edit anything else, stop: that edit is a finding that belongs in the report.
 2. **Every claim is anchored.** A finding names its evidence: `file:line`, a commit, a config entry, or command output you actually saw this session. State concretely what breaks and under what conditions. If you believe something but could not verify it, label it UNVERIFIED instead of asserting it. Treat negative claims — "no callers", "never used", "dead" — as the easiest to get wrong: before one enters the report, re-run the search yourself across source, tests, and docs; a sweep agent's word is not evidence.
 3. **Cover all six dimensions.** Where to look and how to judge are entirely yours — but a report missing a dimension is incomplete, and partial coverage must never read as full coverage.
+
+## The refactor mandate — the one output that obliges somebody
+
+Every launch of this skill ends by naming **exactly one** part of the codebase that the project is then required to rewrite. Not a ranked backlog, not a list of recommendations: one target, mandatory, with an exit condition that is measured rather than declared.
+
+This exists because the reports did not work. Nine Vitruvius audits of one project between July and its S456 left **35 findings still present and 7 of them grown**, and that audit's own words for the review directories were *"both hold dated reports nobody is required to read."* Detection was never the weak point. A finding had no identity, no owner and no exit condition, so the next session started on content and the finding came back larger. A report that obliges nobody is a report that changes nothing, however good it is.
+
+The owner's words, S172: agents fix things the easiest way — a bandaid here, new code beside the old there, another bandaid — and the result is hundreds of thousands of lines nobody can call efficient. The mandate is the answer to that, and it is not optional.
+
+**Choose from the measurement, not from impression.** Run:
+
+```
+python ~/.claude/hooks/refactor_mandate.py --scan <project-root>
+```
+
+It ranks every file by **rework = commits × lines** — how veteran it is, times how big it is — with floors at 200 lines and 10 commits, generated and vendored paths excluded, and session-marker clusters reported as supporting evidence. Choose from the top of that shortlist. You may pass over the top-ranked file, including a `[test]` one, but then say in the report which you took instead and why the measurement misleads here — a translation catalogue and a router can score alike and only one has a tangle to undo. Choosing without running the scan is the failure mode this section exists to end.
+
+**Record it**, which is the second and last thing you are allowed to write:
+
+```
+python ~/.claude/hooks/refactor_mandate.py --set <project-root> <file> <why this one>
+```
+
+A SessionStart gate then states the mandate at the start of every session in that project, and an edit gate refuses work elsewhere in the code until it is closed. You do not enforce any of that and you never do the refactor yourself — you name it, measure it, and hand it over.
+
+**How it closes, so the report can say so plainly:** only when the named file loses at least 30% of its lines, or is gone — split, moved, deleted. Nothing closes it by being declared done, and another patch moves the number the wrong way. The owner alone defers one.
+
+**Tests, since this is where a real rewrite stalls.** The owner's S172 ruling on what a rewrite may do to the tests is held in one place — `TEST_RULE` in `refactor_mandate.py`, which the mandate prints at the start of every session that carries one. Quote it into the report from there rather than writing your own version of it; the reason patch ten is always cheaper than the rewrite is that the tests are shaped around patches one to nine, and that argument belongs in front of whoever does the rewriting.
 
 ## Read the story before the code
 
@@ -87,6 +115,7 @@ The `-S<session>` suffix is load-bearing, not decoration: a scheduled-audit trig
 
 - Under the title, one provenance line: the model and reasoning effort that produced the audit. If either was below the bar (see The engine check), append the caveat there too, so the report carries it without the reader having to remember the session.
 - Plain language — the owner is a mechanical engineer. Define a technical term once, then use it normally.
+- **First section, before the six dimensions: `## The refactor mandate`.** The file named, its measurement (lines, commits, rework, and its rank on the scan), why this one over the others the scan listed, the line count it must fall below to close, and the test rule above. It leads the report because it is the only part that obliges anybody.
 - One section per dimension, all six, in order. A dimension with nothing to report keeps its section and says so, naming what you checked to conclude it — an absent section reads as a clean bill of health, and must never be one by accident.
 - Findings ranked by effort-versus-benefit: quick wins first, then heavier lifts with smaller payoff.
 - Severity on each finding (CRITICAL / WARNING / SUGGESTION) plus what breaks and when.
