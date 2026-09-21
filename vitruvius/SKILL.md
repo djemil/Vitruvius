@@ -39,6 +39,10 @@ python ~/.claude/hooks/refactor_mandate.py --scan <project-root>
 
 It ranks every file by **rework = commits × lines** — how veteran it is, times how big it is — with floors at 200 lines and 10 commits, generated and vendored paths excluded, and session-marker clusters reported as supporting evidence. Choose from the top of that shortlist. You may pass over the top-ranked file, including a `[test]` one, but then say in the report which you took instead and why the measurement misleads here — a translation catalogue and a router can score alike and only one has a tangle to undo. Choosing without running the scan is the failure mode this section exists to end.
 
+**The tie-breaker, and the strongest signal there is.** Among candidates of similar rework, prefer the one whose *requirement* is pinned only by an out-of-process suite — an end-to-end or browser run — rather than by tests that fail in-process in seconds. That is the mechanism behind the whole problem: when nothing local can tell a session whether it has broken the previous fix, adding one more guarded branch is always cheaper than rewriting, and the region accretes patches whatever anybody intends. Judge this at the level of the *behaviour*, not the file: GRIDIGMA's S462 rewrite came out of a file carrying 83 in-process test files, and the seven behaviours inside the scar had none of their own. No grep can see that, which is exactly why it is your judgement and not the scan's. Name it in the report when it is true of your pick.
+
+**Say what the rewrite must do first.** Write the contract tests before touching the code — against the requirements as requirements ("lands at the top and holds while the page settles"), never against what the code currently does. Measured, S462: fifteen minutes of that turned a nine-session, 203-line scar into a mechanical extraction checkable in two seconds, and surfaced two behaviours nine sessions of patching had left uncovered. The whole rewrite took about forty minutes. A mandate whose report omits this invites the tenth patch.
+
 **Record it**, which is the second and last thing you are allowed to write:
 
 ```
