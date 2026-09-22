@@ -87,6 +87,8 @@ The most valuable findings are often invisible in the code alone. Before judging
 
    Do not merge what is only coincidentally similar. Two sites that share a shape but have no reason to change together are correctly separate; when you judge that, say so and leave them alone rather than staying silent.
 
+   **Tests are in scope for this dimension, on the same terms as the code** (owner S172). One test must not repeat another: two cases that exercise the same behaviour are one case and a maintenance cost, whatever they are named or wherever they sit. Identical bodies are a lint's job and not yours — yours is the pair a hash cannot see, written differently and asserting the same requirement, often in different files by sessions that did not know of each other. Report those as duplication findings with every site named, say which one should remain, and do not soften the count because tests feel like coverage. A suite that tests one requirement three times is not three times as safe; it is three times as expensive to change.
+
 3. **Doctrine contradictions** — the project's own rules, against each other and against the code.
 
    Over a project's life, rules accumulate: CLAUDE.md `## Decisions`, MEMORY.md, README, `docs/`, blueprints, code comments, commit messages. Later rules get written without anyone noticing they contradict an earlier one, and both stay on the books — so the project holds two laws and the agent obeys whichever it read last. Surface every such pair. Two kinds count: **rule vs. rule** (two recorded rules that cannot both be followed) and **rule vs. code** (a rule on the books the code does not obey — including a *zombie*: code still faithfully implementing a decision that was cancelled).
