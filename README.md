@@ -2,7 +2,7 @@
 
 *Firmitas. Utilitas. Venustas.*
 
-A [Claude Code](https://claude.com/claude-code) skill that audits a codebase the way a Roman engineer judged a building — **does it stand, does it serve, is anything superfluous** — and hands you one honest, evidence-anchored report that ends by naming **one** part of the codebase the project must now rewrite.
+A [Claude Code](https://claude.com/claude-code) skill that audits a codebase the way a Roman engineer judged a building — **does it stand, does it serve, is anything superfluous** — and hands you one honest, evidence-anchored report that ends by naming **one** part of the codebase the project must refine next.
 
 It never touches your code. That is the point.
 
@@ -26,14 +26,14 @@ Plus a dimension the treatise-writer would have recognized: **the free take** �
 
 ## The refactor mandate: the one output that obliges somebody
 
-Reports alone did not work. Nine audits of one project left 35 findings still present and 7 of them grown: a finding had no owner and no exit condition, so the next session started on new content and the finding came back larger. So every run now ends by naming **exactly one** file the project is required to rewrite. Not a backlog: one target.
+Reports alone did not work. Nine audits of one project left 35 findings still present and 7 of them grown: a finding had no owner and no exit condition, so the next session started on new content and the finding came back larger. So Vitruvius now feeds a refactoring program that obliges the project:
 
-- **Chosen from measurement, not impression.** A scan ranks every file by *rework = commits x lines* (how often it has been changed, times how big it is). The auditor picks from the top, and must say why if it passes over the top-ranked file.
-- **The tie-breaker:** prefer the region whose behaviour is pinned only by slow end-to-end tests. Where nothing fast can tell a session it broke the previous fix, one more guarded branch is always cheaper than a rewrite, and the patches pile up.
-- **Contract tests first,** written against the requirement, never against what the code does today.
-- **Closed by measurement, never by declaration:** the file must lose at least 30% of its lines, or be gone. Another patch moves the number the wrong way.
+- **Each project refines its ten longest files, each in three separate sessions,** one round per session. The list rolls: whatever the ten longest are at each session start.
+- **In each round a fresh reviewer** - an agent that did not do the work, reading a brief the author's hook prints so the worker cannot soften it - lists every remaining defect in the file: duplication, dead code, a patch on a patch, a knot, a split that should not exist, an unpinned or repeated test, a stale comment. Each simplification carries its equivalence argument. The session removes the defects, or disputes one with a reason the next reviewer sees.
+- **A round closes on a check, never on a declaration:** the list worked off, the cleanliness checks clean, and the code (code lines only - no comments, blanks, imports or tests) not grown. Moving code into new files is not refining. Perfectly refined code closes with nothing removed, because there is nothing left to remove; a fixed percentage would never let it stop.
+- **Contract tests first,** written against the requirement, never against what the code does today. They never count against the round.
 
-The mandate is recorded for a session-start gate that states it every session and an edit gate that refuses work elsewhere until it closes. Vitruvius only names and records it. It never does the rewrite.
+**Vitruvius's role is the surveyor; the round reviewer is the inspector.** The reviewer sees one file. Vitruvius sees the whole tree, so it names the target the program cannot see for itself - above all a scatter of small, shallow files that should be folded into one, which never ranks among the ten longest - or confirms the next file owed a round. It opens its report with the program's status: the ten longest files, reviews done of three, the open round, and any finding a worker disputed. Neither Vitruvius nor the reviewer edits code; the project's own session does the refining.
 
 ## What it does
 
@@ -43,7 +43,7 @@ One command from a project root:
 /vitruvius
 ```
 
-One deliverable: `docs/reviews/vitruvius-YYYY-MM-DD-S<session>.md` in the audited project. It opens with the refactor mandate, then one section per dimension. The session number in the filename matters: the author's scheduled-audit trigger reads it to decide when the next audit is due.
+One deliverable: `docs/reviews/vitruvius-YYYY-MM-DD-S<session>.md` in the audited project. It opens with the refactoring program's status and the file named next, then one section per dimension. The session number in the filename matters: the author's scheduled-audit trigger reads it to decide when the next audit is due.
 
 - **It reads the story before the code.** Project docs, decision logs, git history — because the most valuable findings are often invisible in code alone: *zombie decisions*, code still faithfully implementing what was cancelled weeks ago. If you work with AI agents daily, you know this species of debt.
 - **Every claim is anchored.** `file:line`, a commit, a config entry, or observed command output. What breaks, and under exactly what conditions. Anything unprovable is labeled UNVERIFIED instead of asserted.
@@ -56,7 +56,7 @@ Edit anything. Not a typo, not an unused import, not a "safe" cleanup. An obviou
 
 This is a hard rule because it fails without one: offer an agent a friendly *"handle small problems as you see fit"* and it will start fixing mid-audit. An audit that edits is neither an audit nor safe.
 
-It writes exactly two things: the report, and the refactor mandate's record. Neither changes a line of your code.
+It writes exactly two things: the report, and the name of the next refactor round. Neither changes a line of your code.
 
 ## How it was tested
 
@@ -84,9 +84,9 @@ Copy-Item -Recurse Vitruvius\vitruvius "$env:USERPROFILE\.claude\skills\"
 
 Then open Claude Code in any project root and run `/vitruvius`.
 
-**One piece is not in this repository.** The refactor mandate calls `~/.claude/hooks/refactor_mandate.py` (the rework scan and the mandate record) and relies on the author's session-start and edit gates to enforce it. Those hooks are not published. Without them the six dimensions are unaffected, but the mandate step has no scan to rank from, no record to write, and nothing to enforce it.
+**One piece is not in this repository.** The refactoring program runs in `~/.claude/hooks/refactor_mandate.py` (the ranking, the reviewer's brief, the round records) with the author's session-start, edit and cleanliness gates enforcing it. Those hooks are not published. Without them the six dimensions are unaffected, but the mandate step has no program to read, no record to write, and nothing to enforce it.
 
-The skill is deliberately lean — 130 lines. It fixes only what must not drift (the no-edit rule, evidence anchoring, the six dimensions, the content each finding must carry, the refactor mandate, the report contract) and leaves method, judgment, and delegation to the model, following Anthropic's guidance that over-prescriptive skills degrade strong models. It runs on whatever your session uses, but it checks the engine first: below an Opus-5-class model at high reasoning effort it says so once and runs the audit anyway, and every report opens with a provenance line naming the model and effort that produced it.
+The skill is deliberately lean — 132 lines. It fixes only what must not drift (the no-edit rule, evidence anchoring, the six dimensions, the content each finding must carry, the surveyor's part in the refactoring program, the report contract) and leaves method, judgment, and delegation to the model, following Anthropic's guidance that over-prescriptive skills degrade strong models. It runs on whatever your session uses, but it checks the engine first: below an Opus-5-class model at high reasoning effort it says so once and runs the audit anyway, and every report opens with a provenance line naming the model and effort that produced it.
 
 ## License
 
