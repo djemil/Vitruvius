@@ -31,7 +31,7 @@ This exists because the reports did not work. Nine Vitruvius audits of one proje
 
 The owner's words, S172: agents fix things the easiest way — a bandaid here, new code beside the old there, another bandaid — and the result is hundreds of thousands of lines nobody can call efficient. The mandate is the answer to that, and it is not optional.
 
-**The program you are feeding (owner S175).** Each project refines its ten longest files, each in three separate sessions, one round per session. In a round a fresh reviewer - not you, and not the session doing the work - lists every remaining defect in one file, the session removes each one or settles it by agreement (owner S176: the reviewer, then a second reviewer, then the owner - never the worker's word), and the round closes only when that list is worked off, the cleanliness gate is not red, and the code (code lines only: no comments, blanks, imports or tests) did not grow. Refining removes; moving code into new files is not refining. Perfectly refined code closes with nothing removed. The hook holds the rule, the seven defect kinds and the reviewer's brief; quote them from there, never restate them:
+**The program you are feeding (owner S175).** `refactor_mandate.py` holds the program's rule (`RULE`), the agreement ladder, the seven defect kinds and the reviewer's brief; quote them from there, never restate them:
 
 ```
 python ~/.claude/hooks/refactor_mandate.py --scan <project-root>
@@ -55,7 +55,7 @@ python ~/.claude/hooks/refactor_mandate.py --set <project-root> <file> <why this
 
 It opens as the project's next round at the next session start - never displacing an open one - and the SessionStart and edit gates enforce it from there. You never do the refactor yourself, and you never run the round's review.
 
-**Your findings oblige too (owner S176).** Record every CRITICAL and WARNING finding, after your refutation pass, as JSON - `{"report": "<report path>", "findings": [{"severity", "where": "path:line", "what", "fix"}]}` - with:
+**Your findings oblige too (owner S176).** Record every CRITICAL and WARNING finding, after your refutation pass, as JSON - `{"report": "<report path>", "findings": [{"severity", "where": "path:line", "what", "fix"}]}`, saved outside the project (scratchpad or temp) - with:
 
 ```
 python ~/.claude/hooks/refactor_mandate.py --survey <project-root> <findings.json>
@@ -125,7 +125,7 @@ How you work is your call: which files to read deeply, what to delegate to subag
 
 ## The report
 
-One file: `docs/reviews/vitruvius-YYYY-MM-DD-S<session>.md` inside the project being audited — the date it was written, then the project's session number, e.g. `vitruvius-2026-09-03-S305.md`. This is the only file you create or modify.
+One file: `docs/reviews/vitruvius-YYYY-MM-DD-S<session>.md` inside the project being audited — the date it was written, then the project's session number, e.g. `vitruvius-2026-09-03-S305.md`. This is the only file you create or modify in the project; the `--survey` findings JSON is written outside it (your scratchpad or temp directory) and the hook keeps what it records in its own state.
 
 The `-S<session>` suffix is load-bearing, not decoration: a scheduled-audit trigger reads the session number off the filename to decide when the next audit is due, because a written report is the only evidence an audit actually happened — a stored counter records that one was asked for. Save the report without the suffix and the trigger cannot see it, so the audit will be requested again. If you cannot determine the session number, say so in the report and use the date alone rather than inventing one.
 
