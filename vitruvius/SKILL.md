@@ -31,17 +31,17 @@ This exists because the reports did not work. Nine Vitruvius audits of one proje
 
 The owner's words, S172: agents fix things the easiest way — a bandaid here, new code beside the old there, another bandaid — and the result is hundreds of thousands of lines nobody can call efficient. The mandate is the answer to that, and it is not optional.
 
-**The program you are feeding (owner S175).** `refactor_mandate.py` holds the program's rule (`RULE`), the agreement ladder, the seven defect kinds and the reviewer's brief; quote them from there, never restate them:
+**The program you are feeding (owner S175; targets FabervantOps S197).** `refactor_mandate.py` holds the program's rule (`RULE`), the agreement ladder, the seven defect kinds and the reviewer's brief; quote them from there, never restate them:
 
 ```
 python ~/.claude/hooks/refactor_mandate.py --scan <project-root>
 ```
 
-prints the ten longest files, reviews done of three, the open round and the next file owed one.
+prints every file due a round and why (changed since its last review, or its last round found something that mattered), what is frozen as a closed programme, the open round and the next file owed one.
 
 **Your role is the surveyor, the round reviewer's is the inspector.** The reviewer sees one file. You see the whole tree, so name the target the program cannot see for itself:
 
-- **A merge candidate.** A scatter of small, shallow files - each with one caller, hiding nothing, understandable only by opening that caller - never ranks among the ten longest. Name the file they should be folded into, and list the files in the reason.
+- **A merge candidate.** A scatter of small, shallow files - each with one caller, hiding nothing, understandable only by opening that caller - is never due on its own, each being under the length floor. Name the file they should be folded into, and list the files in the reason.
 - **The tie-breaker, and the strongest signal there is.** Among candidates, prefer the one whose *requirement* is pinned only by an out-of-process suite - an end-to-end or browser run - rather than by tests that fail in-process in seconds. When nothing local can tell a session whether it has broken the previous fix, one more guarded branch is always cheaper than a rewrite, and the region accretes patches whatever anybody intends. Judge this at the level of the *behaviour*, not the file: GRIDIGMA's S462 rewrite came out of a file carrying 83 in-process test files, and the seven behaviours inside the scar had none of their own. No grep can see that.
 - **Otherwise, confirm the program's next owed file** and say what the reviewer should look at first.
 
@@ -131,7 +131,7 @@ The `-S<session>` suffix is load-bearing, not decoration: a scheduled-audit trig
 
 - Under the title, one provenance line: the model and reasoning effort that produced the audit. If either was below the bar (see The engine check), append the caveat there too, so the report carries it without the reader having to remember the session.
 - Plain language — the owner is a mechanical engineer. Define a technical term once, then use it normally.
-- **First section, before the six dimensions: `## The refactor mandate`.** The program's status from `--scan` (the ten longest files and reviews done of three, the open round, findings withdrawn after a dispute, and the Vitruvius findings still open from earlier audits - read them from the state the scan names), the file you named and why, and the test rule above. It leads the report because it is the only part that obliges anybody.
+- **First section, before the six dimensions: `## The refactor mandate`.** The program's status from `--scan` (the files due and why, what is frozen, the open round, findings withdrawn after a dispute, and the Vitruvius findings still open from earlier audits - read them from the state the scan names), the file you named and why, and the test rule above. It leads the report because it is the only part that obliges anybody.
 - One section per dimension, all six, in order. A dimension with nothing to report keeps its section and says so, naming what you checked to conclude it — an absent section reads as a clean bill of health, and must never be one by accident.
 - Findings ranked by effort-versus-benefit: quick wins first, then heavier lifts with smaller payoff.
 - Severity on each finding (CRITICAL / WARNING / SUGGESTION) plus what breaks and when.
